@@ -1,4 +1,6 @@
-package edu.mayo.cts2.framework.core.json;
+package edu.mayo.cts2.framework.core.json
+
+import edu.mayo.cts2.framework.core.json.JsonUnmarshallingException;
 
 import static org.junit.Assert.*
 
@@ -45,9 +47,18 @@ class JsonConverterTest {
 		assertEquals "ACTIVE", cs.entryState.toString()
 	}
 
-	
-	
-	@Test
+    @Test(expected = JsonUnmarshallingException)
+    void TestFromInvalidObject(){
+        def converter = new JsonConverter()
+
+        def json = """
+		{"somethingElse" : "aDifferentThing", "codeSystemName":"csname","about":"urn:oid:about","entryState":"ACTIVE"}
+		"""
+
+        converter.fromJson(json);
+    }
+
+    @Test
 	void TestJsonToObject(){
 		def converter = new JsonConverter()
 		
@@ -70,9 +81,7 @@ class JsonConverterTest {
 		
 		assertEquals cs, cs_return
 	}
-	
-	
-	
+
 	@Test
 	void TestSetChoiceValue(){
 		def converter = new JsonConverter()
@@ -86,7 +95,6 @@ class JsonConverterTest {
 		
 		assertNotNull des.namedEntity;
 		assertNotNull des.choiceValue;
-
 	}
 	
 	@Test
@@ -96,11 +104,20 @@ class JsonConverterTest {
 		def cs = new CodeSystemCatalogEntry()
 		cs.addKeyword("test1");
 		cs.addKeyword("test2");
-		
-		println converter.toJson(cs)
+
 		assertTrue converter.toJson(cs).contains("\"keywordList\":[\"test1\",\"test2\"]");
 	}
-	
+
+    @Test
+    void TestGetJsonNoSynopsisValue(){
+        def converter = new JsonConverter()
+
+        def cs = new CodeSystemCatalogEntry()
+        cs.setResourceSynopsis(new EntryDescription())
+
+        converter.toJson(cs)
+    }
+
 	@Test
 	void TestGetJsonNullSynopsisValue(){
 		def converter = new JsonConverter()
@@ -153,7 +170,7 @@ class JsonConverterTest {
 		
 		def cs = marshaller.unmarshal(new StreamSource(stream))
 		
-		println converter.toJson(cs)
+		converter.toJson(cs)
 	}
 	
 	@Test
@@ -162,8 +179,7 @@ class JsonConverterTest {
 		
 		def d = new Designation()
 		d.value = new TsAnyType(content: "test")
-		
-		println converter.toJson(d)
+
 		assertTrue ! converter.toJson(d).contains("anyObject")
 		assertTrue converter.toJson(d).contains("\"value\":\"test\"")
 	}
