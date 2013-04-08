@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>cts2-framework</artifactId>
 		<groupId>edu.mayo.cts2</groupId>
-		<version>0.8.2-SNAPSHOT</version>
+		<version>0.8.3-SNAPSHOT</version>
 	</parent>
 	<groupId>edu.mayo.cts2.framework</groupId>
 
@@ -37,11 +37,20 @@
 			</activation>
 		</profile>
 
-		<profile>
-			<id>child</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
+        <profile>
+            <id>skip-server-start</id>
+            	<activation>
+                 <file>
+                    <exists>src/test/resources/skip-start-server.marker</exists>
+                 </file>
 			</activation>
+        </profile>
+
+		<profile>
+			<id>server-start</id>
+			<activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
 			<build>
 				<plugins>
 

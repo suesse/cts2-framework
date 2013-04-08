@@ -24,16 +24,13 @@
 package edu.mayo.cts2.framework.core.xml;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
+import edu.mayo.cts2.framework.model.castor.MarshallSuperClass;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
@@ -58,6 +55,9 @@ import edu.mayo.cts2.framework.core.plugin.ExportedService;
 public class DelegatingMarshaller implements Cts2Marshaller {
 
 	public static final String NS_PROP = "org.exolab.castor.builder.nspackages";
+    public static final String PROXY_INTERFACES_PROP = "org.exolab.castor.xml.proxyInterfaces";
+
+    private Set<String> marshallSuperClasses = new HashSet<String>();
 	
 	private Map<String, CastorMarshaller> packageToMarshallerMap = new HashMap<String, CastorMarshaller>();
 	
@@ -90,7 +90,12 @@ public class DelegatingMarshaller implements Cts2Marshaller {
 		this.populateNamespaceMaps(
 				this.namespaceMappingProperties,
 				this.namespaceLocationProperties
-		); 
+		);
+
+        String proxyInterfaces = this.createMapFromProperties(
+                this.modelXmlPropertiesHandler.getCastorProperties()).get(PROXY_INTERFACES_PROP);
+
+        this.marshallSuperClasses = new HashSet<String>(Arrays.asList(StringUtils.split(proxyInterfaces, ',')));
 		
 		String nsMappings = (String) this.castorBuilderProperties.get(NS_PROP);
 
@@ -169,7 +174,9 @@ public class DelegatingMarshaller implements Cts2Marshaller {
 		Map<String,String> returnMap = new HashMap<String,String>();
 		
 		for(Entry<Object, Object> entry : props.entrySet()){
-			returnMap.put((String)entry.getKey(), (String)entry.getValue());
+			returnMap.put(
+                    StringUtils.trim((String)entry.getKey()),
+                    StringUtils.trim((String)entry.getValue()));
 		}
 		
 		return returnMap;
@@ -215,8 +222,20 @@ public class DelegatingMarshaller implements Cts2Marshaller {
 	 * @param clazz the clazz
 	 * @return the marshaller
 	 */
-	private Marshaller getMarshaller(Class<?> clazz) {
-		String packageName = ClassUtils.getPackageName(clazz);
+	protected Marshaller getMarshaller(Class<?> clazz) {
+
+        final Class[] interfaces = clazz.getInterfaces();
+
+        if(interfaces != null){
+            for(Class<?> interfaze : interfaces){
+                if(this.marshallSuperClasses.contains(interfaze.getName())){
+                    clazz = clazz.getSuperclass();
+                    break;
+                }
+            }
+        }
+
+        String packageName = ClassUtils.getPackageName(clazz);
 
 		Marshaller marshaller = this.packageToMarshallerMap.get(packageName);
 		

@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2012 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2013 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -21,40 +21,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.mayo.cts2.framework.service.profile;
+package edu.mayo.cts2.framework.model.command;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import edu.mayo.cts2.framework.model.command.ResolvedFilter;
-import edu.mayo.cts2.framework.model.command.ResolvedReadContext;
-import edu.mayo.cts2.framework.model.service.core.Query;
-
 /**
- * The basic set of restrictions and filters that can be applied to a resource.
- *
- * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ * A filter to restrict returned Resource content to only requested
+ * field types.
  */
-public interface ResourceQuery {
-	
-	/**
-	 * Gets the query.
-	 *
-	 * @return the query
-	 */
-	public Query getQuery();
-	
-	/**
-	 * Gets the filter component.
-	 *
-	 * @return the filter component
-	 */
-	public Set<ResolvedFilter> getFilterComponent();
-	
-	/**
-	 * Gets the read context.
-	 *
-	 * @return the read context
-	 */
-	public ResolvedReadContext getReadContext();
-	
+public class ReturnContentFilter {
+
+    public enum PropertyType {PROPERTY, PRESENTATION, DEFINTION, COMMENT}
+    
+    private Set<PropertyType> propertyTypes = new HashSet<PropertyType>();
+
+	public Set<PropertyType> getPropertyTypes() {
+		return propertyTypes;
+	}
+
+	public void setPropertyTypes(Set<PropertyType> propertyTypes) {
+		this.propertyTypes = propertyTypes;
+	}
+
 }

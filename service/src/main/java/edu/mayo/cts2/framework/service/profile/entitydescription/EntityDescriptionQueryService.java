@@ -25,7 +25,6 @@ package edu.mayo.cts2.framework.service.profile.entitydescription;
 
 import java.util.Set;
 
-import edu.mayo.cts2.framework.model.command.ResolvedFilter;
 import edu.mayo.cts2.framework.model.command.ResolvedReadContext;
 import edu.mayo.cts2.framework.model.core.EntityReferenceList;
 import edu.mayo.cts2.framework.model.core.VersionTagReference;
@@ -33,7 +32,6 @@ import edu.mayo.cts2.framework.model.entity.EntityDescription;
 import edu.mayo.cts2.framework.model.entity.EntityDirectoryEntry;
 import edu.mayo.cts2.framework.model.service.core.EntityNameOrURI;
 import edu.mayo.cts2.framework.model.service.core.EntityNameOrURIList;
-import edu.mayo.cts2.framework.model.service.core.Query;
 import edu.mayo.cts2.framework.model.service.core.types.StructuralProfile;
 import edu.mayo.cts2.framework.service.profile.Cts2Profile;
 import edu.mayo.cts2.framework.service.profile.QueryService;
@@ -52,31 +50,23 @@ public interface EntityDescriptionQueryService extends
 	 * Checks if is entity in set.
 	 *
 	 * @param entity the entity
-	 * @param query the query
-	 * @param filterComponent the filter component
 	 * @param restrictions the restrictions
 	 * @param readContext the read context
 	 * @return true, if is entity in set
 	 */
 	public boolean isEntityInSet(
 			EntityNameOrURI entity,
-			Query query,
-			Set<ResolvedFilter> filterComponent, 
 			EntityDescriptionQuery restrictions,
 			ResolvedReadContext readContext);
 	
 	/**
 	 * Resolve as entity reference list.
 	 *
-	 * @param query the query
-	 * @param filterComponent the filter component
 	 * @param restrictions the restrictions
 	 * @param readContext the read context
 	 * @return the entity reference list
 	 */
 	public EntityReferenceList resolveAsEntityReferenceList(
-			Query query,
-			Set<ResolvedFilter> filterComponent, 
 			EntityDescriptionQuery restrictions,
 			ResolvedReadContext readContext);
 	
@@ -84,16 +74,12 @@ public interface EntityDescriptionQueryService extends
 	 * Intersect entity list.
 	 *
 	 * @param entities the entities
-	 * @param query the query
-	 * @param filterComponent the filter component
 	 * @param restrictions the restrictions
 	 * @param readContext the read context
 	 * @return the entity name or uri list
 	 */
 	public EntityNameOrURIList intersectEntityList(
 			Set<EntityNameOrURI> entities,
-			Query query,
-			Set<ResolvedFilter> filterComponent, 
 			EntityDescriptionQuery restrictions,
 			ResolvedReadContext readContext);
 
