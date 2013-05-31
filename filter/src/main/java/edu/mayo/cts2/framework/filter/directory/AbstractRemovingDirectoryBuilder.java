@@ -28,8 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import edu.mayo.cts2.framework.filter.match.Matcher;
 import edu.mayo.cts2.framework.filter.match.ResolvableMatchAlgorithmReference;
 import edu.mayo.cts2.framework.filter.match.ResolvablePropertyReference;
@@ -40,7 +38,11 @@ import edu.mayo.cts2.framework.model.directory.DirectoryResult;
 import edu.mayo.cts2.framework.model.exception.ExceptionFactory;
 
 /**
- * The Class AbstractRemovingDirectoryBuilder.
+ * A {@link DirectoryBuilder} implementation based on knowing a priori all potential
+ * results, and incrementally removing ones that don't match the filters.
+ * 
+ * Use this {@link DirectoryBuilder} implementation when the result set is small enough
+ * to be held entirely in memory.
  *
  * @param <F> the generic type
  * @param <T> the generic type

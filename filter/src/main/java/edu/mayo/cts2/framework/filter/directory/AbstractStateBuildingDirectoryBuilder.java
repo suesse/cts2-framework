@@ -35,7 +35,12 @@ import edu.mayo.cts2.framework.model.directory.DirectoryResult;
 import edu.mayo.cts2.framework.model.service.core.Query;
 
 /**
- * The Class AbstractStateBuildingDirectoryBuilder.
+ * A {@link DirectoryBuilder} implementation based on incrementally building some "state"
+ * object and ultimately resolving it.
+ * 
+ * Use this as opposed to {@link AbstractRemovingDirectoryBuilder} when the result set
+ * is too large to keep in memory, or if you are interacting with some sort of other query
+ * interface, such as JDBC or Lucene.
  *
  * @param <S> the generic type
  * @param <T> the generic type
@@ -164,6 +169,26 @@ public abstract class AbstractStateBuildingDirectoryBuilder<S,T> extends Abstrac
 	 */
 	protected void processQuery(Query query){
 		//
+	}
+	
+	/**
+	 * Update state directly. Clients can use this for state changes that aren't
+	 * necessarily a result of filtering, such as restrictions.
+	 *
+	 * @param state the new state
+	 */
+	protected void updateState(S state){
+		this.initialState = state;
+	}
+	
+	/**
+	 * Gets the current state. In general, this should only be called if needing
+	 * a current state reference when using the {@link #updateState(Object)} method.
+	 *
+	 * @return the current state
+	 */
+	protected S getState(){
+		return this.initialState;
 	}
 	
 	/**
